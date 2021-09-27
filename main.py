@@ -7,7 +7,7 @@ from . import db
 main = Blueprint('main', __name__)
 
 # Allowed extension you can set your own
-ALLOWED_EXTENSIONS = set(['txt', 'pdf', 'png', 'jpg', 'jpeg', 'gif'])
+ALLOWED_EXTENSIONS = set(['mp4', 'png', 'jpg', 'jpeg', 'gif'])
 
 
 def allowed_file(filename):

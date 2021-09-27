@@ -5,3 +5,5 @@ fullyvideoupdater.sublime-workspace
 content/
 venv/
 __pycache__/
+static/
+uploads/
