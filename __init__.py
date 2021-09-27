@@ -1,6 +1,9 @@
+import os
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from werkzeug.utils import secure_filename
+
 
 db = SQLAlchemy()
 
@@ -29,5 +32,15 @@ def create_app():
     # blueprint for non-auth parts of app
     from .main import main as main_blueprint
     app.register_blueprint(main_blueprint)
+
+    # Setup uploads dir
+    path = os.getcwd()
+    UPLOAD_FOLDER = os.path.join(path, 'uploads')
+
+    # Check if path exists, make it if not
+    if not os.path.isdir(UPLOAD_FOLDER):
+        os.mkdir(UPLOAD_FOLDER)
+
+    app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
     return app
