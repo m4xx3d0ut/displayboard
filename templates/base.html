@@ -26,6 +26,11 @@
                                 Upload
                             </a>
                             {% endif %}
+                            {% if current_user.is_authenticated %}
+                            <a href="{{ url_for('main.player') }}" class="navbar-item">
+                                Player
+                            </a>
+                            {% endif %}
                             {% if not current_user.is_authenticated %}
                             <a href="{{ url_for('auth.login') }}" class="navbar-item">
                                 Login

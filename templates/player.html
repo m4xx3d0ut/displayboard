@@ -1,5 +1,6 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
+
+{% block content %}
 
 <h1 class="title">
   eSign
@@ -7,3 +8,44 @@
 <h2 class="subtitle">
   Content displayed here
 </h2>
+
+<p>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <ul class=flashes>
+        {% for message in messages %}
+          <li>{{ message }}</li>
+        {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+</p>
+
+<form method="POST" action="/player">
+  <ol>
+  {% for item in content %}
+    <li>
+      <label for="lorder">Select content:</label>
+      <select id="lorder" name="order">
+        {% for item in content %}
+        <option value={{ item }}>{{ item }}</option>
+        {% endfor %}
+      </select>
+      <label for="ltime">Duration:</label>
+      <select id="ltime" name="time">
+        {% for i in range(0,61) %}
+        <option value={{ i }}>{{ i }}</option>
+        {% endfor %}
+      </select>
+      <label for="linclude">Include in playlist:</label>
+      <input type="hidden" name="include" value="off">
+      <input id="linclude" type="checkbox" name="include">
+    </li>
+  {% endfor %}
+  </ol>
+<input type="submit" value="Set">
+<label for="lremfiles">Delete unchecked files?</label>
+<input id="lremfiles" type="checkbox" name="remfiles">
+</form>
+
+{% endblock %}

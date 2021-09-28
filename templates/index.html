@@ -7,4 +7,11 @@
 <h2 class="subtitle">
   Click the Login link above or contact IT for an account!
 </h2>
+<ol>
+{% for item in content %}
+  <li>
+    {{ item[0] }} (Duration: {{ item[1] }})
+  </li>
+{% endfor %}
+</ol>
 {% endblock %}
