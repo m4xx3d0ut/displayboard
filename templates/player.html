@@ -37,14 +37,11 @@
         <option value={{ i }}>{{ i }}</option>
         {% endfor %}
       </select>
-      <label for="linclude">Include in playlist:</label>
-      <input type="hidden" name="include" value="off">
-      <input id="linclude" type="checkbox" name="include">
     </li>
   {% endfor %}
   </ol>
 <input type="submit" value="Set">
-<label for="lremfiles">Delete unchecked files?</label>
+<label for="lremfiles">Delete 0 duration files?</label>
 <input id="lremfiles" type="checkbox" name="remfiles">
 </form>
 
