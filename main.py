@@ -16,8 +16,11 @@ playlen = []
 # Static files
 static = '%s/displayboard/static/' % (os.getcwd())
 
-# Content list TEST
+# Content list
 content = os.listdir(static)
+
+# Base URL for dynamic pages
+base_url = 'http://192.168.254.153'
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -39,6 +42,9 @@ def index():
     for i in range(0, len(playlist)):
         if playlist[i] in content:
             plcontent.append([playlist[i], playlen[i]])
+
+    for i in range(0, len(plcontent)):
+        play(i, plcontent[i], len(plcontent))
 
     return render_template('index.html', content=plcontent)
 
@@ -139,3 +145,39 @@ def player():
         # return redirect('/')
 
     return render_template('player.html', content=content)
+
+"""
+url = int from a range
+dur_url = duration int;url of next page
+asset = fname of asset in static
+
+0
+['test.gif', '2']
+1
+['test.mp4', '6']
+2
+['test.png', '8']
+
+
+NOTE: Redirects are not working as intended yet.
+"""
+@main.route('/player/<url>', methods=['GET'])
+def play(url, pl_line, redir_len):
+    print(url)
+    print(pl_line)
+    print(redir_len)
+
+    asset = pl_line[0]
+    dur_url = '%s;%s/player/%s' % (pl_line[1], base_url, url)
+
+    print(asset)
+    print(dur_url)
+
+    if asset.split('.')[1] == 'mp4':
+        return render_template('video.html', dur_url=dur_url, \
+        asset=asset)
+    else:
+        return render_template('img.html', dur_url=dur_url, \
+        asset=asset)
+
+    return render_template('index.html')
