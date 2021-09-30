@@ -40,7 +40,6 @@ def index():
 
     if request.method == 'POST':
         if request.form['now_playing']:
-            print(request.form['now_playing'])
             return redirect('/player/play')
 
     # Set variables for slideshow function
@@ -50,8 +49,9 @@ def index():
 
         asset = pl_line[0]
         dur_url = pl_line[1]
-        asset_list.append(asset)
-        dur_list.append(dur_url)
+        if int(dur_url) > 0:
+            asset_list.append(asset)
+            dur_list.append(dur_url)
 
     # Check if playfile exists and init vars
     if os.path.isfile(playfile) and len(playlist) == 0:
@@ -70,14 +70,7 @@ def index():
             plcontent.append([playlist[i], playlen[i]])
 
     for i in range(0, len(plcontent)):
-        # print('plcontent[i]:')
-        # print(plcontent[i])
-        # print('len(plcontent):')
-        # print(len(plcontent))
         play_data(i, plcontent[i], len(plcontent))
-
-    print(asset_list)
-    print(dur_list)
 
     return render_template('index.html', content=plcontent)
 
@@ -101,12 +94,11 @@ def upload():
             if file and allowed_file(file.filename):
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-                flash('File(s) successfully uploaded')
+                flash('%s successfully uploaded' % (filename))
 
             else:
                 flash('File type not accepted!')
 
-        print(os.listdir(current_app.config['UPLOAD_FOLDER']))
         for file in \
         os.listdir(current_app.config['UPLOAD_FOLDER']):
             move('%s/%s' % (current_app.config['UPLOAD_FOLDER'] ,file), \
@@ -138,9 +130,6 @@ User must be logged in.
 def player():
     global playlist, playlen, content, asset_list, dur_list
 
-    print(asset_list)
-    print(dur_list)
-
     include = []
     content = os.listdir(static)
 
@@ -149,7 +138,6 @@ def player():
         global content
         if len(delfiles) > 0 and delfiles[0] == 'on':
             line_queue = []
-            print(content)
             with open(playfile, 'r') as pl:
                 for line in pl.readlines():
                     if line.split(',')[1].rstrip('\n') == '0':
@@ -163,18 +151,10 @@ def player():
             content = os.listdir(static)
             with open(playfile, 'w') as pl:
                 for line in line_queue:
-                    print(line)
-                    print(line.split(',')[0])
-                    print(line.split(',')[1])
                     if line.split(',')[0] in content:
-                        print("write to pl")
                         pl.write('%s%s' % (line.rstrip('\n'), '\n'))
-                    else:
-                        print("remove from pl")
 
             pl.close
-            # content = os.listdir(static)
-            print(content)
 
             flash('Deleting 0 duration files!')
 
@@ -191,16 +171,15 @@ def player():
             with open(playfile, 'a') as pl:
                 pl.write('%s,%s\n' % (playlist[i], playlen[i]))
             pl.close
-        if request.form.get('remfiles') == 'on':
-            print('Deleting unused files...')
+        # if request.form.get('remfiles') == 'on':
+        #     print('Deleting unused files...')
         for i in range(0, len(playlist)):
             if int(playlen[i]) > 0:
                 remzero()
                 return redirect('/')
-            else:
-                print('Failed')
+            # else:
+            #     print('Failed')
         remzero()
-        print(request.form.getlist('remfiles'))
         flash('Duration must exceed zero on selected content!')
         # return redirect('/')
 
