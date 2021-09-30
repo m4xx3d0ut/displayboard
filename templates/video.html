@@ -2,9 +2,9 @@
 <html>
 
 <head>
-    <meta http-equiv="refresh" content={{ dur_url }}>
+    <meta http-equiv="refresh" content={{ dur_url }};{{url_for("main.play")}}>
 </head>
 
 <video autoplay muted loop width="345" height="100%" id="myVideo">
-  <source src="./static/{{ asset }}" type="video/mp4">
+  <source src='{{url_for("static",filename = asset)}}' type="video/mp4">
 </video>

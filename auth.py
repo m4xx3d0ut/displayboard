@@ -7,10 +7,13 @@ from . import db
 
 auth = Blueprint('auth', __name__)
 
+# Login page
 @auth.route('/login')
 def login():
     return render_template('login.html')
 
+
+# Validate credentials and login user
 @auth.route('/login', methods=['POST'])
 def login_post():
     email = request.form.get('email')
@@ -27,12 +30,16 @@ def login_post():
     login_user(user, remember=remember)
     return redirect(url_for('main.upload'))
 
+
+# Logs out current user
 @auth.route('/logout')
 @login_required
 def logout():
     logout_user()
     return redirect(url_for('main.index'))
 
+
+# Admin page function registers new user account
 @auth.route('/admin', methods=['POST'])
 @login_required
 def signup_post():

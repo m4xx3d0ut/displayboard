@@ -1,13 +1,17 @@
 import os
-from flask import Blueprint, render_template, request, flash, redirect, current_app
+from shutil import move
+from flask import Blueprint, render_template, request, flash, redirect, current_app, url_for
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from . import db
 
 main = Blueprint('main', __name__)
 
-# Allowed extension you can set your own
-ALLOWED_EXTENSIONS = set(['mp4', 'png', 'jpg', 'jpeg', 'gif'])
+# List of allowed extensions and function to validate
+valid_f_ext = set(['mp4', 'png', 'jpg', 'jpeg', 'gif'])
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in valid_f_ext
 
 # Playlist vars
 playfile = './playlist.txt'
@@ -18,16 +22,36 @@ static = '%s/displayboard/static/' % (os.getcwd())
 
 # Content list
 content = os.listdir(static)
+global dur_list
+global asset_list
 
 # Base URL for dynamic pages
 base_url = 'http://192.168.254.153'
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@main.route('/')
+"""
+The app home page displays currently set playlist and sets variables for
+the /player/play slideshow function.  Available without login to view current
+playlist.
+"""
+@main.route('/', methods=['GET', 'POST'])
 def index():
-    global playlist, playlen, content
+    global playlist, playlen, content, dur_list, asset_list
+
+    if request.method == 'POST':
+        if request.form['now_playing']:
+            print(request.form['now_playing'])
+            return redirect('/player/play')
+
+    # Set variables for slideshow function
+    def play_data(url, pl_line, redir_len):
+        global dur_list, asset_list
+
+
+        asset = pl_line[0]
+        dur_url = pl_line[1]
+        asset_list.append(asset)
+        dur_list.append(dur_url)
 
     # Check if playfile exists and init vars
     if os.path.isfile(playfile) and len(playlist) == 0:
@@ -38,16 +62,30 @@ def index():
         pl.close
 
     plcontent = []
+    dur_list = []
+    asset_list = []
 
     for i in range(0, len(playlist)):
         if playlist[i] in content:
             plcontent.append([playlist[i], playlen[i]])
 
     for i in range(0, len(plcontent)):
-        play(i, plcontent[i], len(plcontent))
+        # print('plcontent[i]:')
+        # print(plcontent[i])
+        # print('len(plcontent):')
+        # print(len(plcontent))
+        play_data(i, plcontent[i], len(plcontent))
+
+    print(asset_list)
+    print(dur_list)
 
     return render_template('index.html', content=plcontent)
 
+
+"""
+Multi file uploader.
+User must be logged in.
+"""
 @main.route('/upload', methods=['GET', 'POST'])
 @login_required
 def upload():
@@ -68,23 +106,45 @@ def upload():
             else:
                 flash('File type not accepted!')
 
+        print(os.listdir(current_app.config['UPLOAD_FOLDER']))
+        for file in \
+        os.listdir(current_app.config['UPLOAD_FOLDER']):
+            move('%s/%s' % (current_app.config['UPLOAD_FOLDER'] ,file), \
+            '%s%s' % (static, file))
+
         return render_template('upload.html', name=current_user.name)
     else:
         return render_template('upload.html', name=current_user.name)
 
+
+"""
+Admin page for user credential creation.
+Must be logged in as admin to access
+"""
 @main.route('/admin')
 @login_required
 def admin():
     return render_template('admin.html')
 
+
+"""
+Allows order and duration of playlist content.  Content can be deleted from
+static by setting 'Duration' to 0 and ticking the 'Delete 0 duration files?'
+box.
+User must be logged in.
+"""
 @main.route('/player', methods=['GET', 'POST'])
 @login_required
 def player():
-    global playlist, playlen, content
+    global playlist, playlen, content, asset_list, dur_list
+
+    print(asset_list)
+    print(dur_list)
 
     include = []
     content = os.listdir(static)
 
+    # Remove items from playlist with duration of 0, deletes from static.
     def remzero():
         global content
         if len(delfiles) > 0 and delfiles[0] == 'on':
@@ -146,38 +206,23 @@ def player():
 
     return render_template('player.html', content=content)
 
+
 """
-url = int from a range
-dur_url = duration int;url of next page
-asset = fname of asset in static
-
-0
-['test.gif', '2']
-1
-['test.mp4', '6']
-2
-['test.png', '8']
-
-
-NOTE: Redirects are not working as intended yet.
+Renders a video or image HTML template of next content in queue.
+Uses meta refresh to load next piece of content.
+Duration of each item set in meta content.
 """
-@main.route('/player/<url>', methods=['GET'])
-def play(url, pl_line, redir_len):
-    print(url)
-    print(pl_line)
-    print(redir_len)
+@main.route('/player/play', methods=['GET'])
+def play(url='play'):
+    global asset_list, dur_list
 
-    asset = pl_line[0]
-    dur_url = '%s;%s/player/%s' % (pl_line[1], base_url, url)
+    asset = asset_list[0]
+    dur_url = dur_list[0]
 
-    print(asset)
-    print(dur_url)
+    asset_list += [asset_list.pop(0)]
+    dur_list += [dur_list.pop(0)]
 
     if asset.split('.')[1] == 'mp4':
-        return render_template('video.html', dur_url=dur_url, \
-        asset=asset)
+        return render_template('video.html', asset=asset, dur_url=dur_url)
     else:
-        return render_template('img.html', dur_url=dur_url, \
-        asset=asset)
-
-    return render_template('index.html')
+        return render_template('img.html', asset=asset, dur_url=dur_url)

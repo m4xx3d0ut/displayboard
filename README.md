@@ -10,5 +10,6 @@ Initially this project was intended to update Android eSigns running the fully-k
 - [x] Content upload system
 - [x] User login system
 - [x] User management with Admin panel
-- [ ] Content settings configuration utility
-- [ ] Content player
+- [X] Content settings configuration utility
+- [X] Content player
+- [ ] Testing and code cleanup

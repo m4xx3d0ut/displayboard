@@ -24,5 +24,7 @@
     {{ item[0] }} (Duration: {{ item[1] }})
   </li>
 {% endfor %}
-</ol>
+</ol><form method="POST" action="/">
+<input type="submit" name="now_playing" value="Now Playing">
+</form>
 {% endblock %}

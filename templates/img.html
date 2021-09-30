@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <meta http-equiv="refresh" content={{ dur_url }}>
+    <meta http-equiv="refresh" content={{ dur_url }};{{url_for("main.play")}}>
 </head>
 
-<img src='./static/{{ asset }}' width="345" height="100%" id='selector'/>
+<img src='{{url_for("static",filename = asset)}}' width="345" height="100%" id='selector'/>
