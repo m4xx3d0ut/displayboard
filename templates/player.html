@@ -22,7 +22,7 @@
 </p>
 
 <form method="POST" action="/player">
-  <ol>
+  <ol class="center">
   {% for item in content %}
     <li>
       <label for="lorder">Select content:</label>
@@ -40,9 +40,11 @@
     </li>
   {% endfor %}
   </ol>
+<div class="button">
 <input type="submit" value="Set">
 <label for="lremfiles">Delete 0 duration files?</label>
 <input id="lremfiles" type="checkbox" name="remfiles">
+</div>
 </form>
 
 {% endblock %}

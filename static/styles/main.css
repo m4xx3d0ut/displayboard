@@ -1,0 +1,29 @@
+@charset "UTF-8";
+body {
+    color:  white;
+    background-position: right center;
+    background-repeat: no-repeat;
+    background-color: #0c0d0c;
+    margin: 0px;
+    font-family: 'Source Sans Pro', sans-serif;
+    font-size: 18px;
+    text-align: center;
+}
+.hero-head {
+    overflow: hidden;
+    top: 0;
+    width: 100%;
+    float:  right;
+    margin-bottom: 0;
+    text-align: center;
+    padding: 14px;
+    background-color: #333332;
+}
+.hero-head a {
+     margin-right: 15px;
+     color: #ffffff !important;
+}
+.center {
+    display: inline-block; 
+    text-align: left; 
+}

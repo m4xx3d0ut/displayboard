@@ -19,9 +19,10 @@ playlist = []
 playlen = []
 # Static files
 static = '%s/displayboard/static/' % (os.getcwd())
+content = '%scontent/' % (static)
 
 # Content list
-content = os.listdir(static)
+content = os.listdir(content)
 global dur_list
 global asset_list
 
@@ -102,7 +103,7 @@ def upload():
         for file in \
         os.listdir(current_app.config['UPLOAD_FOLDER']):
             move('%s/%s' % (current_app.config['UPLOAD_FOLDER'] ,file), \
-            '%s%s' % (static, file))
+            '%scontent/%s' % (static, file))
 
         return render_template('upload.html', name=current_user.name)
     else:
@@ -131,7 +132,7 @@ def player():
     global playlist, playlen, content, asset_list, dur_list
 
     include = []
-    content = os.listdir(static)
+    content = os.listdir('%scontent/' % (static))
 
     # Remove items from playlist with duration of 0, deletes from static.
     def remzero():
@@ -142,13 +143,13 @@ def player():
                 for line in pl.readlines():
                     if line.split(',')[1].rstrip('\n') == '0':
                         try:
-                            os.remove('%s%s' % (static, line.split(',')[0]))
+                            os.remove('%scontent/%s' % (static, line.split(',')[0]))
                         except:
                             pass
                     else:
                         line_queue.append(line)
             pl.close
-            content = os.listdir(static)
+            content = os.listdir('%scontent/' % (static))
             with open(playfile, 'w') as pl:
                 for line in line_queue:
                     if line.split(',')[0] in content:
@@ -161,7 +162,7 @@ def player():
 
     # Write data from select fields of /player to playfile
     if request.method == 'POST':
-        content = os.listdir(static)
+        content = os.listdir('%scontent/' % (static))
         playlist = request.form.getlist('order')
         playlen = request.form.getlist('time')
         delfiles = request.form.getlist('remfiles')
@@ -195,7 +196,7 @@ Duration of each item set in meta content.
 def play(url='play'):
     global asset_list, dur_list
 
-    asset = asset_list[0]
+    asset = 'content/%s' % (asset_list[0])
     dur_url = dur_list[0]
 
     asset_list += [asset_list.pop(0)]

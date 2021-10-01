@@ -5,6 +5,6 @@ fullyvideoupdater.sublime-workspace
 content/
 venv/
 __pycache__/
-static/
+static/content/
 uploads/
 notes.txt
