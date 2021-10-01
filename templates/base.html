@@ -42,6 +42,11 @@
                                 Logout
                             </a>
                             {% endif %}
+                            {% if is_admin %}
+                            <a href="{{ url_for('main.admin') }}" class="navbar-item">
+                                Admin
+                            </a>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

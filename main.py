@@ -39,6 +39,14 @@ playlist.
 def index():
     global playlist, playlen, content, dur_list, asset_list
 
+    is_admin = False
+
+    if current_user.is_authenticated:
+        permissions = current_user.permissions
+        print(permissions)
+        if permissions == 'admin':
+            is_admin = True
+
     if request.method == 'POST':
         if request.form['now_playing']:
             return redirect('/player/play')
@@ -73,7 +81,7 @@ def index():
     for i in range(0, len(plcontent)):
         play_data(i, plcontent[i], len(plcontent))
 
-    return render_template('index.html', content=plcontent)
+    return render_template('index.html', content=plcontent, is_admin=is_admin)
 
 
 """
@@ -105,9 +113,9 @@ def upload():
             move('%s/%s' % (current_app.config['UPLOAD_FOLDER'] ,file), \
             '%scontent/%s' % (static, file))
 
-        return render_template('upload.html', name=current_user.name)
+        return render_template('upload.html')
     else:
-        return render_template('upload.html', name=current_user.name)
+        return render_template('upload.html')
 
 
 """
@@ -117,7 +125,10 @@ Must be logged in as admin to access
 @main.route('/admin')
 @login_required
 def admin():
-    return render_template('admin.html')
+    if current_user.permissions == 'admin':
+        return render_template('admin.html')
+    else:
+        return render_template('index.html')
 
 
 """

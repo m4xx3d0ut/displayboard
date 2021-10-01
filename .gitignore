@@ -6,5 +6,6 @@ content/
 venv/
 __pycache__/
 static/content/
+templates/login_2fa.html
 uploads/
 notes.txt

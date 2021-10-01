@@ -17,10 +17,14 @@
                     <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
                 </div>
             </div>
-
             <div class="field">
                 <div class="control">
                     <input class="input is-large" type="password" name="password" placeholder="Your Password">
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <input type="number" class="form-control" id="otp" name="otp" placeholder="One Time Passcode" required>
                 </div>
             </div>
             <div class="field">
@@ -34,3 +38,5 @@
     </div>
 </div>
 {% endblock %}
+
+<input type="number" class="form-control" id="otp" name="otp" required>
