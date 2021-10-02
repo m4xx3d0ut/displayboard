@@ -12,4 +12,9 @@ Initially this project was intended to update Android eSigns running the fully-k
 - [x] User management with Admin panel
 - [X] Content settings configuration utility
 - [X] Content player
+- [X] 2FA via Google Authenticator
 - [ ] Testing and code cleanup
+
+### Where this project is at
+
+This is now fully working!  I need to do some additional testing and cleanup, but I will be able to begin using this to program out digital display boards next week.  To get the 2FA to work, you will need to first browse through the db to the secret for admin, use that to setup the Google Authenticator app for time based OTP.  From that point you will be able to log in as admin (I wouldn't recommend setting up your own admin and user accounts, remove the test entry from the db for security purposes).  More updates to come as I perform further testing and revise functionality.
