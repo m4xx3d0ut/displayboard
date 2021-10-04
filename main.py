@@ -43,7 +43,6 @@ def index():
 
     if current_user.is_authenticated:
         permissions = current_user.permissions
-        print(permissions)
         if permissions == 'admin':
             is_admin = True
 
@@ -183,14 +182,10 @@ def player():
             with open(playfile, 'a') as pl:
                 pl.write('%s,%s\n' % (playlist[i], playlen[i]))
             pl.close
-        # if request.form.get('remfiles') == 'on':
-        #     print('Deleting unused files...')
         for i in range(0, len(playlist)):
             if int(playlen[i]) > 0:
                 remzero()
                 return redirect('/')
-            # else:
-            #     print('Failed')
         remzero()
         flash('Duration must exceed zero on selected content!')
         # return redirect('/')
