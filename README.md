@@ -18,3 +18,18 @@ Initially this project was intended to update Android eSigns running the fully-k
 ### Where this project is at
 
 This is now fully working!  I need to do some additional testing and cleanup, but I will be able to begin using this to program our digital display boards next week.  To get the 2FA to work, you will need to first browse through the db to the secret for admin, use that to setup the Google Authenticator app for time based OTP.  From that point you will be able to log in as admin (I would recommend setting up your own admin and user accounts, remove the test entry from the db for security purposes).  More updates to come as I perform further testing and revise functionality.
+
+There is a env_vars.sh script included that will run the flask development server.  If you want to run it with Gunicorn you'll need to set these environmental variables:
+
+export SESSION_TYPE=redis
+export SESSION_REDIS=redis://127.0.0.1:6379
+
+There are default credentials in the SQLite DB, you can log in with:
+
+Email: admin@admin.com
+Password: admin
+OTP: (You will need to get the 'secret' from the DB and use the "Enter a setup key" option in Google Authenticator.  You can browse the DB to find this.)
+
+The admin page is pretty spartan at this point.  You can add a user, it will show you their info, including the secret for the OTP setup, but there is no way to remove a user from the panel at this time.  I recommend you use a DB browser, after creating a new admin account, to remove the default credentials.
+
+I'm serving this with Nginx and Gunicorn.  The dispalyboard.service unit file will help you get that working with Systemd if you're into that sort of thing.

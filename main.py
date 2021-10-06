@@ -1,6 +1,6 @@
 import os
 from shutil import move
-from flask import Blueprint, render_template, request, flash, redirect, current_app, url_for
+from flask import Blueprint, render_template, request, flash, redirect, current_app, url_for, session
 from flask_login import login_required, current_user
 from werkzeug.utils import secure_filename
 from . import db
@@ -39,6 +39,9 @@ playlist.
 def index():
     global playlist, playlen, content, dur_list, asset_list
 
+    # asset_list = session['asset_list']
+    # dur_list = session['dur_list']
+
     is_admin = False
 
     if current_user.is_authenticated:
@@ -54,6 +57,8 @@ def index():
     def play_data(url, pl_line, redir_len):
         global dur_list, asset_list
 
+        # asset_list = session['asset_list']
+        # dur_list = session['dur_list']
 
         asset = pl_line[0]
         dur_url = pl_line[1]
@@ -61,13 +66,22 @@ def index():
             asset_list.append(asset)
             dur_list.append(dur_url)
 
+        session['dur_list'] = dur_list
+        session['asset_list'] = asset_list
+
     # Check if playfile exists and init vars
     if os.path.isfile(playfile) and len(playlist) == 0:
         with open(playfile, 'r') as pl:
             for line in pl.readlines():
                 playlist.append(line.split(',')[0])
                 playlen.append(line.split(',')[1].rstrip('\n'))
+        session['playlist'] = playlist
+        session['playlen'] = playlen
+
         pl.close
+    else:
+        playlist = session['playlist']
+        playlen = session['playlen']
 
     plcontent = []
     dur_list = []
@@ -75,10 +89,14 @@ def index():
 
     for i in range(0, len(playlist)):
         if playlist[i] in content:
-            plcontent.append([playlist[i], playlen[i]])
+            if int(playlen[i]) > 0:
+                plcontent.append([playlist[i], playlen[i]])
 
     for i in range(0, len(plcontent)):
         play_data(i, plcontent[i], len(plcontent))
+
+    session['dur_list'] = dur_list
+    session['asset_list'] = asset_list
 
     return render_template('index.html', content=plcontent, is_admin=is_admin)
 
@@ -139,7 +157,7 @@ User must be logged in.
 @main.route('/player', methods=['GET', 'POST'])
 @login_required
 def player():
-    global playlist, playlen, content, asset_list, dur_list
+    global playlist, playlen, content#, asset_list, dur_list
 
     include = []
     content = os.listdir('%scontent/' % (static))
@@ -173,8 +191,10 @@ def player():
     # Write data from select fields of /player to playfile
     if request.method == 'POST':
         content = os.listdir('%scontent/' % (static))
-        playlist = request.form.getlist('order')
-        playlen = request.form.getlist('time')
+        session['playlist'] = request.form.getlist('order')
+        session['playlen'] = request.form.getlist('time')
+        playlist = session['playlist']
+        playlen = session['playlen']
         delfiles = request.form.getlist('remfiles')
         if os.path.isfile(playfile):
             os.remove(playfile)
@@ -200,13 +220,18 @@ Duration of each item set in meta content.
 """
 @main.route('/player/play', methods=['GET'])
 def play(url='play'):
-    global asset_list, dur_list
+    # global asset_list, dur_list
+    asset_list = session['asset_list']
+    dur_list = session['dur_list']
 
     asset = 'content/%s' % (asset_list[0])
     dur_url = dur_list[0]
 
     asset_list += [asset_list.pop(0)]
     dur_list += [dur_list.pop(0)]
+
+    session['dur_list'] = dur_list
+    session['asset_list'] = asset_list
 
     if asset.split('.')[1] == 'mp4':
         return render_template('video.html', asset=asset, dur_url=dur_url)

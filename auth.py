@@ -76,4 +76,9 @@ def signup_post():
     db.session.add(new_user)
     db.session.commit()
 
-    return redirect(url_for('auth.login'))
+    flash('New user created!')
+    flash('Email: %s' % email)
+    flash('Password: %s' % password)
+    flash('Secret: %s' % secret)
+
+    return redirect(url_for('main.admin'))
