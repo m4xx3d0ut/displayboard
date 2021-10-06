@@ -21,8 +21,8 @@ This is now fully working!  I need to do some additional testing and cleanup, bu
 
 There is a env_vars.sh script included that will run the flask development server.  If you want to run it with Gunicorn you'll need to set these environmental variables:
 
-export SESSION_TYPE=redis
-export SESSION_REDIS=redis://127.0.0.1:6379
+export SESSION_TYPE=redis<br />
+export SESSION_REDIS=redis://127.0.0.1:6379<br />
 
 There are default credentials in the SQLite DB, you can log in with:
 
