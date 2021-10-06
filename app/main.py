@@ -26,9 +26,6 @@ content = os.listdir(content)
 global dur_list
 global asset_list
 
-# Base URL for dynamic pages
-base_url = 'http://192.168.254.153'
-
 
 """
 The app home page displays currently set playlist and sets variables for
@@ -38,9 +35,6 @@ playlist.
 @main.route('/', methods=['GET', 'POST'])
 def index():
     global playlist, playlen, content, dur_list, asset_list
-
-    # asset_list = session['asset_list']
-    # dur_list = session['dur_list']
 
     is_admin = False
 
@@ -57,9 +51,6 @@ def index():
     def play_data(url, pl_line, redir_len):
         global dur_list, asset_list
 
-        # asset_list = session['asset_list']
-        # dur_list = session['dur_list']
-
         asset = pl_line[0]
         dur_url = pl_line[1]
         if int(dur_url) > 0:
@@ -70,7 +61,9 @@ def index():
         session['asset_list'] = asset_list
 
     # Check if playfile exists and init vars
-    if os.path.isfile(playfile) and len(playlist) == 0:
+    if os.path.isfile(playfile):
+        playlist = []
+        playlen = []
         with open(playfile, 'r') as pl:
             for line in pl.readlines():
                 playlist.append(line.split(',')[0])
@@ -154,7 +147,7 @@ User must be logged in.
 @main.route('/player', methods=['GET', 'POST'])
 @login_required
 def player():
-    global playlist, playlen, content#, asset_list, dur_list
+    global playlist, playlen, content
 
     include = []
     content = os.listdir('%scontent/' % (static))
@@ -192,7 +185,6 @@ def player():
 
     # Write data from select fields of /player to playfile
     if request.method == 'POST':
-        content = os.listdir('%scontent/' % (static))
         session['playlist'] = request.form.getlist('order')
         session['playlen'] = request.form.getlist('time')
         playlist = session['playlist']
@@ -210,7 +202,6 @@ def player():
                 return redirect('/')
         remzero()
         flash('Duration must exceed zero on selected content!')
-        # return redirect('/')
 
     return render_template('player.html', content=content)
 
@@ -222,7 +213,6 @@ Duration of each item set in meta content.
 """
 @main.route('/player/play', methods=['GET'])
 def play(url='play'):
-    # global asset_list, dur_list
     asset_list = session['asset_list']
     dur_list = session['dur_list']
 
