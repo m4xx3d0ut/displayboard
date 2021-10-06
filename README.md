@@ -26,9 +26,9 @@ export SESSION_REDIS=redis://127.0.0.1:6379
 
 There are default credentials in the SQLite DB, you can log in with:
 
-Email: admin@admin.com
-Password: admin
-OTP: (You will need to get the 'secret' from the DB and use the "Enter a setup key" option in Google Authenticator.  You can browse the DB to find this.)
+Email: admin@admin.com<br />
+Password: admin<br />
+OTP: (You will need to get the 'secret' from the DB and use the "Enter a setup key" option in Google Authenticator.  You can browse the DB to find this.)<br />
 
 The admin page is pretty spartan at this point.  You can add a user, it will show you their info, including the secret for the OTP setup, but there is no way to remove a user from the panel at this time.  I recommend you use a DB browser, after creating a new admin account, to remove the default credentials.
 
