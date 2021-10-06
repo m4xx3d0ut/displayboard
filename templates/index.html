@@ -18,13 +18,16 @@
       {% endif %}
     {% endwith %}
 </p>
+{% if content is defined %}
 <ol class="center">
 {% for item in content %}
   <li>
     {{ item[0] }} (Duration: {{ item[1] }})
   </li>
 {% endfor %}
-</ol><form method="POST" action="/">
+</ol>
+{% endif %}
+<form method="POST" action="/">
 <input type="submit" name="now_playing" value="Now Playing">
 </form>
 {% endblock %}

@@ -79,9 +79,6 @@ def index():
         session['playlen'] = playlen
 
         pl.close
-    else:
-        playlist = session['playlist']
-        playlen = session['playlen']
 
     plcontent = []
     dur_list = []
