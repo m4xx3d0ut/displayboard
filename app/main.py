@@ -18,7 +18,7 @@ playfile = './playlist.txt'
 playlist = []
 playlen = []
 # Static files
-static = '%s/displayboard/static/' % (os.getcwd())
+static = '%s/app/static/' % (os.getcwd())
 content = '%scontent/' % (static)
 
 # Content list

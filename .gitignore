@@ -1,11 +1,8 @@
-esign138.json
-esign115.json
-fullyvideoupdater.sublime-project
-fullyvideoupdater.sublime-workspace
-content/
+playlist.txt
+uploads/*
 venv/
-__pycache__/
-static/content/
-templates/login_2fa.html
+app/__pycache__/
+app/static/content/*
+app/templates/login_2fa.html
 uploads/
 notes.txt
