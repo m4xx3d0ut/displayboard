@@ -2,7 +2,6 @@ playlist.txt
 uploads/*
 venv/
 app/__pycache__/
-app/static/content/*
 app/templates/login_2fa.html
 uploads/
 notes.txt

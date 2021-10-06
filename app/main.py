@@ -159,6 +159,11 @@ def player():
     include = []
     content = os.listdir('%scontent/' % (static))
 
+    # No hidden files
+    for f in content:
+        if f.startswith('.'):
+            content.remove(f)
+
     # Remove items from playlist with duration of 0, deletes from static.
     def remzero():
         global content
