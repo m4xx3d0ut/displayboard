@@ -1,6 +1,4 @@
 [Unit]
-Requires=redis-vars.service
-After=redis-vars.service
 Description=Gunicorn instance to serve Displayboard app
 After=network.target
 [Service]
